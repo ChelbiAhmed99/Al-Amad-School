@@ -10,6 +10,9 @@ require_once '../includes/db.php';
 
 header('Content-Type: application/json');
 
+$user_id = $_SESSION['user_id'] ?? null;
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 15;
     $notesDB = $database->getReference('notifications')->getValue() ?: [];
