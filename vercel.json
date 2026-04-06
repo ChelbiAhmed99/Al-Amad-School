@@ -5,12 +5,5 @@
     { "src": "auth/*.php", "use": "vercel-php@0.7.2" },
     { "src": "dashboard/*.php", "use": "vercel-php@0.7.2" },
     { "src": "assets/**/*", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "/assets/(.*)", "dest": "/assets/$1" },
-    { "src": "/api/(.*)", "dest": "/api/$1.php" },
-    { "src": "/auth/(.*)", "dest": "/auth/$1.php" },
-    { "src": "/dashboard/(.*)", "dest": "/dashboard/$1.php" },
-    { "src": "/(.*)", "dest": "/index.php" }
   ]
 }
