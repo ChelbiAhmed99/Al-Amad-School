@@ -1,6 +1,6 @@
 # Al Amad School Platform
 
-A modern, responsive school management system built with PHP and SQLite. This platform provides dedicated portals for Administrators, Teachers, and Parents to streamline school operations, track student progress, and manage communications.
+A modern, responsive school management system built with PHP and Firebase. This platform provides dedicated portals for Administrators, Teachers, and Parents to streamline school operations, track student progress, and manage communications in real-time.
 
 ## Features
 
@@ -9,86 +9,58 @@ A modern, responsive school management system built with PHP and SQLite. This pl
   - **Teacher**: Class management, attendance tracking, grading, and direct communication with students/parents.
   - **Parent**: Access to children's grades, attendance history, school notices, and payment tracking.
 - **Modern User Interface**: Responsive design with a polished aesthetic, featuring both Dark and Light modes.
+- **Real-time Synchronization**: Powered by Firebase Realtime Database for instant updates across all portals.
 - **AI Chatbot Integration**: Integrated premium AI assistant widget for automated help and support.
-- **Secure Authentication**: Role-based access control protecting secure routes and dashboard functionality.
+- **Secure Authentication**: Firebase Auth for secure login and role-based access control.
 
 ## Technologies Used
 
-- **Backend**: PHP 8+
-- **Database**: SQLite (managed via PDO)
-- **Frontend**: Vanilla HTML5, CSS3, and JavaScript
-- **Fonts**: Google Fonts (Outfit)
+- **Backend**: PHP 8.2+ (Required extensions: `openssl`, `mbstring`, `curl`)
+- **Database**: Firebase Realtime Database
+- **Authentication**: Firebase Auth
+- **Dependencies**: Composer (for Kreait Firebase SDK)
+- **Frontend**: Vanilla HTML5, CSS3, JavaScript
 
 ## Project Structure
 
-- `/api/` - Backend API endpoints (e.g., login handling)
+- `/api/` - Backend API endpoints (Firebase interaction)
 - `/assets/` - Static files (CSS, JS, images)
 - `/auth/` - Authentication pages (login, logout)
-- `/dashboard/` - Role-specific portal pages
-- `/includes/` - Shared components (database connection, auth checks, sidebar, etc.)
+- `/dashboard/` - Role-specific portal portals
+- `/includes/` - Shared components (Firebase connection, auth checks, sidebar, etc.)
+- `firebase-credentials.json` - **CRITICAL**: Your Firebase service account credentials.
 
 ## Getting Started
 
-To run this project locally, you need PHP installed on your system.
+To run this project locally, you need PHP and Composer installed.
 
-### Prerequisites: Installing PHP
-If you do not have PHP installed, follow the guide for your operating system:
-
-**Windows:**
-
-**Option A: Using XAMPP (Recommended for beginners)**
-1. Download **XAMPP for Windows** from [apachefriends.org](https://www.apachefriends.org/index.html).
-2. Run the installer and finish the setup (default settings are fine).
-3. Open the **XAMPP Control Panel**.
-4. Click the **"Shell"** button on the right side. This will open a command prompt where PHP is already configured.
-5. In this shell, navigate to your project folder using the `cd` command (e.g., `cd Desktop\Olfa Project`).
-6. You can now run the initialization commands below.
-
-**Option B: Native PHP Installation (Command Line)**
-1. Download the latest PHP `.zip` file from [windows.php.net](https://windows.php.net/download/).
-2. Create a new folder named `php` in your C: drive (`C:\php`) and extract the ZIP contents into it.
-3. Open the Windows Start menu, search for **"Environment variables"**, and click **"Edit the system environment variables"**.
-4. Click the **"Environment Variables..."** button at the bottom.
-5. Under the "System variables" section, scroll down to find the `Path` variable, select it, and click **"Edit..."**.
-6. Click **"New"**, type `C:\php`, and click **"OK"** on all windows to apply the changes.
-7. Open a new Command Prompt (`cmd`) to run the initialization commands below.
-
-**macOS:**
-You can easily install PHP using [Homebrew](https://brew.sh/):
+### 1. Install Dependencies
+Run the following command in the project root to install the Firebase SDK:
 ```bash
-brew install php
+composer install
 ```
 
-**Linux (Ubuntu/Debian):**
-Install PHP and the required SQLite extension:
-```bash
-sudo apt update
-sudo apt install php php-sqlite3
-```
+### 2. Configure Firebase
+Ensure you have a `firebase-credentials.json` file in the project root. This file contains your Firebase Service Account keys.
 
-Verify your installation by opening a terminal and running `php -v`.
-
-### 1. Initialize the Database
-If this is your first time setting up the project, or if you need to reset the database, run the setup script to create the necessary tables and seed initial data:
-
+### 3. Initialize the Database (Optional Seeding)
+To seed initial demo data (Admin, Teachers, Classes), run:
 ```bash
 php setup_db.php
 ```
 
-### 2. Start the Development Server
-Use PHP's built-in web server to run the application locally without needing Apache or Nginx:
-
+### 4. Start the Development Server
 ```bash
 php -S localhost:8000
 ```
 
-### 3. Access the Application
-Open your web browser and navigate to:
-- **Homepage:** http://localhost:8000/
-- **Default Login Portal:** http://localhost:8000/auth/login.php
+### 5. Access the Application
+Open your web browser and navigate to: http://localhost:8000/
 
-> **Note**: For development purposes, session checks can be temporarily bypassed via `includes/auth_check.php`.
+## Windows Setup Guide
+For a detailed step-by-step guide on setting up this project on Windows, please refer to the `windows_setup.md` document.
 
 ## License
 
 All rights reserved.
+

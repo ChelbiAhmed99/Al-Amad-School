@@ -7,7 +7,7 @@ require_once '../includes/db.php';
 checkRole('admin');
 
 $data = json_decode(file_get_contents('php://input'), true);
-$id   = (int)($data['id'] ?? 0);
+$id   = trim($data['id'] ?? '');
 
 if (!$id) {
     echo json_encode(['success' => false, 'message' => 'Request ID is required.']);
@@ -15,18 +15,14 @@ if (!$id) {
 }
 
 try {
-    $pdo->beginTransaction();
+    // 1. Fetch request details from Firebase
+    $request = $database->getReference('visitor_requests/' . $id)->getValue();
 
-    // 1. Fetch request details
-    $stmt = $pdo->prepare("SELECT * FROM visitor_requests WHERE id = ? AND status = 'Pending'");
-    $stmt->execute([$id]);
-    $request = $stmt->fetch();
-
-    if (!$request) {
+    if (!$request || ($request['status'] ?? '') !== 'Pending' && ($request['status'] ?? '') !== 'pending') {
         throw new Exception("Request not found or already processed.");
     }
 
-    // 2. Check if email is already registered
+    // 2. Check if email is already registered in Firebase Auth
     try {
         $auth->getUserByEmail($request['parent_email']);
         throw new Exception("A user with this email already exists.");
@@ -34,24 +30,25 @@ try {
         // Clear to proceed
     }
 
-    // 3. Create Parent User account
-    $newUser = $auth->createUser([
+    // 3. Create Parent User account in Firebase Auth
+    $newParent = $auth->createUser([
         'email' => $request['parent_email'],
         'password' => 'Welcome@123',
-        'displayName' => $request['child_last_name'] . ' Family'
+        'displayName' => $request['parent_first_name'] . ' ' . $request['parent_last_name']
     ]);
-    $parentUserId = $newUser->uid;
+    $parentUserId = $newParent->uid;
 
+    // 4. Create Parent profile in Realtime Database
     $database->getReference('users/' . $parentUserId)->set([
         'email' => $request['parent_email'],
         'role' => 'parent',
-        'first_name' => '',
-        'last_name' => $request['child_last_name'],
+        'first_name' => $request['parent_first_name'],
+        'last_name' => $request['parent_last_name'],
         'gender' => $request['child_gender'] ?? 'other',
         'created_at' => date('Y-m-d H:i:s')
     ]);
 
-    // 4. Create Student record
+    // 5. Create Student record in Realtime Database
     $dob = (date('Y') - (int)$request['child_age']) . '-01-01';
     $database->getReference('students')->push([
         'first_name' => $request['child_first_name'],
@@ -63,11 +60,10 @@ try {
         'created_at' => date('Y-m-d H:i:s')
     ]);
 
-    // 5. Mark request as Approved
-    $stmt = $pdo->prepare("UPDATE visitor_requests SET status = 'Approved' WHERE id = ?");
-    $stmt->execute([$id]);
+    // 6. Mark request as Approved in Firebase
+    $database->getReference('visitor_requests/' . $id)->update(['status' => 'Approved']);
 
-    // 6. Send welcome notification to the new parent
+    // 7. Send welcome notification to the new parent
     $database->getReference('notifications')->push([
         'user_id' => $parentUserId,
         'type' => 'success',
@@ -78,8 +74,6 @@ try {
         'created_at' => date('Y-m-d H:i:s')
     ]);
 
-    $pdo->commit();
-
     echo json_encode([
         'success'      => true,
         'message'      => 'Parent account and student record created successfully.',
@@ -88,7 +82,6 @@ try {
     ]);
 
 } catch (Exception $e) {
-    if ($pdo->inTransaction()) $pdo->rollBack();
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
 ?>

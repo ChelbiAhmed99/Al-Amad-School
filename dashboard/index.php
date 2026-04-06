@@ -256,7 +256,7 @@ include '../includes/dash-header.php';
                                 <td><?= htmlspecialchars($vr['child_first_name']) ?> <small style="opacity:.7;">(<?= $vr['child_age'] ?>y)</small></td>
                                 <td><span class="badge" style="background:rgba(249,202,36,.15); color:#b8860b; border:1px solid rgba(249,202,36,.3);"><?= htmlspecialchars($vr['payment_plan']) ?></span></td>
                                 <td>
-                                    <button onclick="validateRequest(<?= $vr['id'] ?>)" class="btn btn-primary" style="padding:.35rem .9rem; font-size:.78rem; border-radius:8px;">
+                                    <button onclick="validateRequest('<?= $vr['id'] ?>')" class="btn btn-primary" style="padding:.35rem .9rem; font-size:.78rem; border-radius:8px;">
                                         <i class="fas fa-check"></i> Validate
                                     </button>
                                 </td>
