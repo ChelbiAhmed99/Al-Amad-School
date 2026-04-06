@@ -1,0 +1,15 @@
+{
+  "functions": {
+    "api/**/*.php": { "runtime": "vercel-php@0.7.2" },
+    "auth/**/*.php": { "runtime": "vercel-php@0.7.2" },
+    "dashboard/**/*.php": { "runtime": "vercel-php@0.7.2" },
+    "index.php": { "runtime": "vercel-php@0.7.2" }
+  },
+  "routes": [
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/api/(.*)", "dest": "/api/$1.php" },
+    { "src": "/auth/(.*)", "dest": "/auth/$1.php" },
+    { "src": "/dashboard/(.*)", "dest": "/dashboard/$1.php" },
+    { "src": "/", "dest": "/index.php" }
+  ]
+}
